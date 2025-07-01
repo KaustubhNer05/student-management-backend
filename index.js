@@ -13,6 +13,14 @@ const con = mysql2.createConnection({
 	password: process.env.DB_PASSWORD,
 	database: process.env.DB_NAME
 });
+con.connect((err) => {
+	if (err) {
+		console.log("❌ MySQL Connection Failed:", err);
+	} else {
+		console.log("✅ MySQL Connected Successfully");
+	}
+});
+
 
 app.post("/ss", (req, res) => {
 	const sql = "INSERT INTO student VALUES(?, ?, ?)";
@@ -23,7 +31,13 @@ app.post("/ss", (req, res) => {
 
 app.get("/gs", (req, res) => {
 	con.query("SELECT * FROM student", (err, result) => {
-		err ? res.send(err) : res.send(result);
+		if (err) {
+			console.log("❌ DB Error:", err);
+			res.send(err);
+		} else {
+			console.log("✅ Query Result:", result);
+			res.send(result);
+		}
 	});
 });
 
